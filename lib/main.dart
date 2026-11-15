@@ -40,6 +40,9 @@ class ClassroomTasksApp extends StatelessWidget {
     return MaterialApp(
       title: 'Pendientes de clase',
       debugShowCheckedModeBanner: false,
+      locale: const Locale('es'),
+      supportedLocales: const [Locale('es')],
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
       theme: ThemeData(
         colorScheme: colors,
         scaffoldBackgroundColor: const Color(0xfff4f7f3),
