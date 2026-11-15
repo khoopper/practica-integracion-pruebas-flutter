@@ -1,0 +1,30 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{uid}/tasks/{taskId} {
+      function isOwner() {
+        return request.auth != null && request.auth.uid == uid;
+      }
+
+      function isValidTask() {
+        let fields = ['title', 'notes', 'done', 'createdAt'];
+        let task = request.resource.data;
+        return task.keys().hasAll(fields)
+          && task.keys().hasOnly(fields)
+          && task.title is string
+          && task.title.size() >= 3
+          && task.title.size() <= 80
+          && task.notes is string
+          && task.notes.size() <= 260
+          && task.done is bool
+          && task.createdAt is timestamp;
+      }
+
+      allow read, delete: if isOwner();
+      allow create: if isOwner() && isValidTask()
+        && request.resource.data.createdAt == request.time;
+      allow update: if isOwner() && isValidTask()
+        && request.resource.data.createdAt == resource.data.createdAt;
+    }
+  }
+}
