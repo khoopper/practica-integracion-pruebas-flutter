@@ -1,0 +1,174 @@
+import 'package:flutter/material.dart';
+
+import '../data/task_repository.dart';
+import '../domain/task.dart';
+
+class TaskEditorPage extends StatefulWidget {
+  const TaskEditorPage({super.key, required this.repository, this.task});
+
+  final TaskRepository repository;
+  final Task? task;
+
+  @override
+  State<TaskEditorPage> createState() => _TaskEditorPageState();
+}
+
+class _TaskEditorPageState extends State<TaskEditorPage> {
+  final _form = GlobalKey<FormState>();
+  late final _title = TextEditingController(text: widget.task?.title ?? '');
+  late final _notes = TextEditingController(text: widget.task?.notes ?? '');
+  bool _saving = false;
+  String? _error;
+
+  @override
+  void dispose() {
+    _title.dispose();
+    _notes.dispose();
+    super.dispose();
+  }
+
+  Future<void> _save() async {
+    if (_saving || !_form.currentState!.validate()) return;
+    final draft = TaskDraft(_title.text, _notes.text);
+    final task = widget.task;
+    await _write(
+      () => task == null
+          ? widget.repository.create(draft)
+          : widget.repository.edit(task.id, draft),
+      'No se pudo guardar la tarea.',
+    );
+  }
+
+  Future<void> _confirmDelete(Task task) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('¿Eliminar esta tarea?'),
+        content: Text(task.title),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: const Text('Cancelar'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: const Text('Eliminar definitivamente'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed == true && mounted) {
+      await _write(
+        () => widget.repository.delete(task.id),
+        'No se pudo eliminar la tarea.',
+      );
+    }
+  }
+
+  Future<void> _write(
+    Future<void> Function() action,
+    String failureMessage,
+  ) async {
+    if (_saving) return;
+    setState(() {
+      _saving = true;
+      _error = null;
+    });
+    try {
+      await action();
+      if (mounted) Navigator.of(context).pop();
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _saving = false;
+        _error = failureMessage;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final task = widget.task;
+    final theme = Theme.of(context);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(task == null ? 'Nueva tarea' : 'Detalle de tarea'),
+      ),
+      body: Align(
+        alignment: Alignment.topCenter,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 620),
+            child: Card.outlined(
+              margin: EdgeInsets.zero,
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Form(
+                  key: _form,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      if (task != null) ...[
+                        Text(
+                          task.done ? 'Completada' : 'Pendiente',
+                          style: theme.textTheme.labelLarge,
+                        ),
+                        const SizedBox(height: 14),
+                      ],
+                      TextFormField(
+                        controller: _title,
+                        enabled: !_saving,
+                        decoration: const InputDecoration(labelText: 'Título'),
+                        textInputAction: TextInputAction.next,
+                        validator: validateTitle,
+                      ),
+                      const SizedBox(height: 14),
+                      TextFormField(
+                        controller: _notes,
+                        enabled: !_saving,
+                        decoration: const InputDecoration(
+                          labelText: 'Notas (opcional)',
+                          alignLabelWithHint: true,
+                        ),
+                        minLines: 3,
+                        maxLines: 5,
+                        validator: validateNotes,
+                      ),
+                      if (_error case final error?) ...[
+                        const SizedBox(height: 12),
+                        Semantics(
+                          liveRegion: true,
+                          child: Text(
+                            error,
+                            style: TextStyle(color: theme.colorScheme.error),
+                          ),
+                        ),
+                      ],
+                      const SizedBox(height: 20),
+                      FilledButton(
+                        onPressed: _saving ? null : _save,
+                        child: Text(_saving ? 'Guardando…' : 'Guardar tarea'),
+                      ),
+                      if (task != null)
+                        TextButton.icon(
+                          onPressed: _saving
+                              ? null
+                              : () => _confirmDelete(task),
+                          icon: const Icon(Icons.delete_outline_rounded),
+                          label: const Text('Eliminar tarea'),
+                          style: TextButton.styleFrom(
+                            foregroundColor: theme.colorScheme.error,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
