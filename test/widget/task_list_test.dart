@@ -74,6 +74,8 @@ void main() {
     expect(repository.created, isEmpty);
 
     await tester.enterText(find.byType(TextFormField).first, '  Ensayo  ');
+    await tester.pumpAndSettle();
+    expect(find.text('Escribe al menos 3 caracteres.'), findsNothing);
     await tester.tap(find.text('Guardar tarea'));
     await tester.pumpAndSettle();
     expect(repository.created.single.title, 'Ensayo');

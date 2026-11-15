@@ -109,6 +109,7 @@ class _TaskEditorPageState extends State<TaskEditorPage> {
                   padding: const EdgeInsets.all(24),
                   child: Form(
                     key: _form,
+                    autovalidateMode: AutovalidateMode.onUserInteractionIfError,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
