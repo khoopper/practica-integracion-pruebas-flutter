@@ -28,7 +28,7 @@ The test description was:
 00:01 +0 -1: /workspace/scratch/0ba7c85498b0/practica-integracion-pruebas-flutter/test/widget/task_list_test.dart: INC-002 el botón de navegación está localizado [E]
   Test failed. See exception logs above.
   The test description was: INC-002 el botón de navegación está localizado
-  
+
 00:01 +0 -1: /workspace/scratch/0ba7c85498b0/practica-integracion-pruebas-flutter/test/widget/task_list_test.dart: INC-003 volver espera a que termine el guardado
 ══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
 The following TestFailure was thrown running a test:
@@ -54,7 +54,7 @@ The test description was:
 00:01 +0 -2: /workspace/scratch/0ba7c85498b0/practica-integracion-pruebas-flutter/test/widget/task_list_test.dart: INC-003 volver espera a que termine el guardado [E]
   Test failed. See exception logs above.
   The test description was: INC-003 volver espera a que termine el guardado
-  
+
 00:01 +0 -2: Some tests failed.
 
 Failing tests:

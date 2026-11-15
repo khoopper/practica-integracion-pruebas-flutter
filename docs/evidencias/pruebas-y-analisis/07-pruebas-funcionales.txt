@@ -1,0 +1,38 @@
+Fecha local: 2026-11-15T16:28:04-06:00
+Entorno: Flutter Web + Firebase Local Emulator Suite, proyecto demo-practica-flutter.
+Cada ronda arranca una sesión de navegador nueva con cuentas ficticias.
+R1 | CP-01 | Aprobado | Firebase inició y se mostró el formulario de acceso.
+R1 | CP-21 | Aprobado | Auth devolvió HTTP 200, creó al usuario A y abrió Mis tareas.
+R1 | CP-03 | Aprobado | Auth devolvió HTTP 400 con mensaje entendible y conservó el acceso.
+R1 | CP-02 | Aprobado | Auth devolvió HTTP 200 y abrió Mis tareas con el usuario A.
+R1 | CP-12A | Aprobado | Cuenta nueva con cero documentos y mensaje de lista vacía.
+R1 | CP-04 | Aprobado | Título vacío validado en pantalla y cero documentos creados.
+R1 | CP-07 | Aprobado | La tarea apareció en UI y Firestore con nota Capítulo 8 y estado pendiente.
+R1 | CP-08 | Aprobado | Se vieron dos tareas. Leer apuntes quedó arriba por ser más reciente.
+R1 | CP-05 | Aprobado | Acceso, Mis tareas, Nueva tarea y Detalle abrieron en sus pasos.
+R1 | CP-06 | Aprobado | El botón Atrás regresó del detalle a la lista y conservó las dos tareas.
+R1 | CP-09 | Aprobado | El mismo documento conservó su ID y estado completado tras editar título y nota.
+R1 | CP-11 | Aprobado | El usuario B de prueba obtuvo 403 PERMISSION_DENIED para una tarea de A.
+R1 | CP-12B | Aprobado | Al desconectar la red se conservó la lista cargada con aviso de datos locales.
+R1 | CP-19 | Aprobado | Al cerrar y volver a abrir la app se restauraron sesión, tareas y cambios.
+R1 | CP-10 | Aprobado | Leer apuntes desapareció de la lista y solo quedó un documento en Firestore.
+R1 | CP-18 | Aprobado | Salir llevó al acceso. Se mantuvo cerrado al recargar y no se mostró la lista.
+R1 | CP-20 | Aprobado | Registro, acceso, creación, edición, persistencia, borrado y salida completados.
+R2 | CP-01 | Aprobado | Firebase inició y se mostró el formulario de acceso.
+R2 | CP-21 | Aprobado | Auth devolvió HTTP 200, creó al usuario A y abrió Mis tareas.
+R2 | CP-03 | Aprobado | Auth devolvió HTTP 400 con mensaje entendible y conservó el acceso.
+R2 | CP-02 | Aprobado | Auth devolvió HTTP 200 y abrió Mis tareas con el usuario A.
+R2 | CP-12A | Aprobado | Cuenta nueva con cero documentos y mensaje de lista vacía.
+R2 | CP-04 | Aprobado | Título vacío validado en pantalla y cero documentos creados.
+R2 | CP-07 | Aprobado | La tarea apareció en UI y Firestore con nota Capítulo 8 y estado pendiente.
+R2 | CP-08 | Aprobado | Se vieron dos tareas. Leer apuntes quedó arriba por ser más reciente.
+R2 | CP-05 | Aprobado | Acceso, Mis tareas, Nueva tarea y Detalle abrieron en sus pasos.
+R2 | CP-06 | Aprobado | El botón Atrás regresó del detalle a la lista y conservó las dos tareas.
+R2 | CP-09 | Aprobado | El mismo documento conservó su ID y estado completado tras editar título y nota.
+R2 | CP-11 | Aprobado | El usuario B de prueba obtuvo 403 PERMISSION_DENIED para una tarea de A.
+R2 | CP-12B | Aprobado | Al desconectar la red se conservó la lista cargada con aviso de datos locales.
+R2 | CP-19 | Aprobado | Al cerrar y volver a abrir la app se restauraron sesión, tareas y cambios.
+R2 | CP-10 | Aprobado | Leer apuntes desapareció de la lista y solo quedó un documento en Firestore.
+R2 | CP-18 | Aprobado | Salir llevó al acceso. Se mantuvo cerrado al recargar y no se mostró la lista.
+R2 | CP-20 | Aprobado | Registro, acceso, creación, edición, persistencia, borrado y salida completados.
+Resultado: 34 comprobaciones aprobadas en dos rondas.
