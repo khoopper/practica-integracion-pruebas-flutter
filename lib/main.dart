@@ -7,6 +7,7 @@ import 'data/firebase_config.dart';
 import 'data/task_repository.dart';
 import 'ui/auth_page.dart';
 import 'ui/task_list_page.dart';
+import 'ui/theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,27 +37,13 @@ class ClassroomTasksApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = ColorScheme.fromSeed(seedColor: const Color(0xff17684c));
     return MaterialApp(
       title: 'Pendientes de clase',
       debugShowCheckedModeBanner: false,
       locale: const Locale('es'),
       supportedLocales: const [Locale('es')],
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
-      theme: ThemeData(
-        colorScheme: colors,
-        scaffoldBackgroundColor: const Color(0xfff4f7f3),
-        useMaterial3: true,
-        inputDecorationTheme: const InputDecorationTheme(
-          border: OutlineInputBorder(),
-          filled: true,
-        ),
-        filledButtonTheme: FilledButtonThemeData(
-          style: FilledButton.styleFrom(
-            padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 16),
-          ),
-        ),
-      ),
+      theme: temaCuaderno(),
       home: home,
     );
   }

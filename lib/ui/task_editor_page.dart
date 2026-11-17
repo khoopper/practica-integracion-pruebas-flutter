@@ -2,6 +2,8 @@ import 'package:material_ui/material_ui.dart';
 
 import '../data/task_repository.dart';
 import '../domain/task.dart';
+import 'cuaderno.dart';
+import 'theme.dart';
 
 class TaskEditorPage extends StatefulWidget {
   const TaskEditorPage({super.key, required this.repository, this.task});
@@ -89,7 +91,6 @@ class _TaskEditorPageState extends State<TaskEditorPage> {
   @override
   Widget build(BuildContext context) {
     final task = widget.task;
-    final theme = Theme.of(context);
     return PopScope(
       canPop: !_saving,
       child: Scaffold(
@@ -97,29 +98,37 @@ class _TaskEditorPageState extends State<TaskEditorPage> {
           automaticallyImplyLeading: !_saving,
           title: Text(task == null ? 'Nueva tarea' : 'Detalle de tarea'),
         ),
-        body: Align(
+        body: PapelCuadriculado(
+          child: Align(
           alignment: Alignment.topCenter,
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.fromLTRB(20, 34, 26, 48),
             child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 620),
-              child: Card.outlined(
-                margin: EdgeInsets.zero,
-                child: Padding(
-                  padding: const EdgeInsets.all(24),
+              constraints: const BoxConstraints(maxWidth: 640),
+              child: Hoja(
+                  padding: const EdgeInsets.fromLTRB(26, 22, 26, 18),
                   child: Form(
                     key: _form,
                     autovalidateMode: AutovalidateMode.onUserInteractionIfError,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        if (task != null) ...[
-                          Text(
-                            task.done ? 'Completada' : 'Pendiente',
-                            style: theme.textTheme.labelLarge,
-                          ),
-                          const SizedBox(height: 14),
-                        ],
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                task == null ? 'TAREA NUEVA' : 'FICHA DE TAREA',
+                                style: Letra.etiqueta,
+                              ),
+                            ),
+                            if (task != null)
+                              Sello(
+                                task.done ? 'Completada' : 'Pendiente',
+                                activo: task.done,
+                              ),
+                          ],
+                        ),
+                        const SizedBox(height: 18),
                         TextFormField(
                           controller: _title,
                           enabled: !_saving,
@@ -142,31 +151,31 @@ class _TaskEditorPageState extends State<TaskEditorPage> {
                           validator: validateNotes,
                         ),
                         if (_error case final error?) ...[
-                          const SizedBox(height: 12),
-                          Semantics(
-                            liveRegion: true,
-                            child: Text(
-                              error,
-                              style: TextStyle(color: theme.colorScheme.error),
-                            ),
-                          ),
+                          const SizedBox(height: 14),
+                          Aviso(etiqueta: 'ERROR', mensaje: error),
                         ],
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 22),
                         FilledButton(
                           onPressed: _saving ? null : _save,
                           child: Text(_saving ? 'Guardando…' : 'Guardar tarea'),
                         ),
-                        if (task != null)
-                          TextButton.icon(
-                            onPressed: _saving
-                                ? null
-                                : () => _confirmDelete(task),
-                            icon: const Icon(Icons.delete_outline_rounded),
-                            label: const Text('Eliminar tarea'),
-                            style: TextButton.styleFrom(
-                              foregroundColor: theme.colorScheme.error,
+                        if (task != null) ...[
+                          const SizedBox(height: 6),
+                          const Divider(height: 22),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: TextButton.icon(
+                              onPressed: _saving
+                                  ? null
+                                  : () => _confirmDelete(task),
+                              icon: const Icon(Icons.delete_outline, size: 20),
+                              label: const Text('Eliminar tarea'),
+                              style: TextButton.styleFrom(
+                                foregroundColor: Paleta.tinta,
+                              ),
                             ),
                           ),
+                        ],
                       ],
                     ),
                   ),
