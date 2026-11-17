@@ -118,7 +118,6 @@ def screenshot(page, filename):
 
 def open_emulator_console(context, suffix):
     console = context.new_page()
-    console.route(re.compile(r'^https://fonts\.(?:googleapis|gstatic)\.com/'), lambda route: route.abort())
     console.goto(f'{EMULATOR_UI}/{suffix}', wait_until='domcontentloaded')
     return console
 

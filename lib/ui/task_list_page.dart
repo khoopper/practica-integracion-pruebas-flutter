@@ -2,7 +2,9 @@ import 'package:material_ui/material_ui.dart';
 
 import '../data/task_repository.dart';
 import '../domain/task.dart';
+import 'cuaderno.dart';
 import 'task_editor_page.dart';
+import 'theme.dart';
 
 class TaskListPage extends StatefulWidget {
   const TaskListPage({
@@ -66,70 +68,78 @@ class _TaskListPageState extends State<TaskListPage> {
         actions: [
           TextButton.icon(
             onPressed: _signingOut ? null : _signOut,
-            icon: const Icon(Icons.logout_rounded),
+            style: TextButton.styleFrom(foregroundColor: Paleta.papel),
+            icon: const Icon(Icons.logout, size: 18),
             label: const Text('Salir'),
           ),
           const SizedBox(width: 12),
         ],
       ),
-      body: LayoutBuilder(
-        builder: (context, layout) {
-          final inset = layout.maxWidth > 768
-              ? (layout.maxWidth - 720) / 2
-              : 24.0;
-          return StreamBuilder<TaskFeed>(
-            stream: _feed,
-            builder: (context, snapshot) {
-              final feed = snapshot.data;
-              final tasks = feed?.tasks ?? const <Task>[];
-              final done = tasks.where((task) => task.done).length;
-              return ListView(
-                padding: EdgeInsets.fromLTRB(inset, 28, inset, 40),
-                children: [
-                  DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.primaryContainer,
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(22),
-                      child: Wrap(
-                        alignment: WrapAlignment.spaceBetween,
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        spacing: 16,
-                        runSpacing: 16,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                'Mis tareas',
-                                style: theme.textTheme.headlineSmall,
-                              ),
-                              if (feed != null)
-                                Text(
-                                  '${tasks.length - done} pendientes · $done completadas',
-                                ),
-                            ],
-                          ),
-                          FilledButton.icon(
-                            onPressed: () => _openEditor(),
-                            icon: const Icon(Icons.add_rounded),
-                            label: const Text('Nueva tarea'),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  if (snapshot.hasError)
-                    Card.outlined(
-                      child: Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: Column(
+      body: PapelCuadriculado(
+        child: LayoutBuilder(
+          builder: (context, layout) {
+            final inset = layout.maxWidth > 808
+                ? (layout.maxWidth - 760) / 2
+                : 20.0;
+            return StreamBuilder<TaskFeed>(
+              stream: _feed,
+              builder: (context, snapshot) {
+                final feed = snapshot.data;
+                final tasks = feed?.tasks ?? const <Task>[];
+                final done = tasks.where((task) => task.done).length;
+                return ListView(
+                  padding: EdgeInsets.fromLTRB(inset, 34, inset + 6, 48),
+                  children: [
+                    Wrap(
+                      alignment: WrapAlignment.spaceBetween,
+                      crossAxisAlignment: WrapCrossAlignment.end,
+                      spacing: 20,
+                      runSpacing: 18,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Text('No se pudieron cargar las tareas.'),
+                            Text(
+                              fechaDeAgenda(DateTime.now()),
+                              style: Letra.etiqueta,
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              'Mis tareas',
+                              style: theme.textTheme.headlineMedium,
+                            ),
+                            if (feed != null) ...[
+                              const SizedBox(height: 8),
+                              Text(
+                                _conteo(tasks.length - done, done),
+                                style: Letra.etiqueta.copyWith(
+                                  color: Paleta.tinta,
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                        FilledButton.icon(
+                          onPressed: () => _openEditor(),
+                          icon: const Icon(Icons.add, size: 20),
+                          label: const Text('Nueva tarea'),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 18),
+                    const Divider(color: Paleta.tinta, thickness: 2, height: 2),
+                    const SizedBox(height: 22),
+                    if (snapshot.hasError)
+                      Hoja(
+                        padding: const EdgeInsets.fromLTRB(20, 18, 12, 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Etiqueta('ERROR DE LECTURA'),
+                            const SizedBox(height: 6),
+                            const Mensaje('No se pudieron cargar las tareas.'),
+                            const SizedBox(height: 4),
                             TextButton(
                               onPressed: () => setState(
                                 () => _feed = widget.repository.watch(),
@@ -138,68 +148,131 @@ class _TaskListPageState extends State<TaskListPage> {
                             ),
                           ],
                         ),
-                      ),
-                    )
-                  else if (feed == null)
-                    const Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(24),
-                        child: CircularProgressIndicator(),
-                      ),
-                    )
-                  else ...[
-                    if (feed.fromCache)
-                      const Padding(
-                        padding: EdgeInsets.only(bottom: 16),
-                        child: Text(
-                          'Mostrando datos locales. Verificando conexión.',
-                        ),
-                      ),
-                    if (tasks.isEmpty)
-                      const Card.outlined(
+                      )
+                    else if (feed == null)
+                      const Center(
                         child: Padding(
                           padding: EdgeInsets.all(24),
-                          child: Text('Todavía no tienes tareas.'),
+                          child: CircularProgressIndicator(),
                         ),
                       )
-                    else
-                      for (final task in tasks)
-                        Card.outlined(
-                          key: ValueKey(task.id),
-                          margin: const EdgeInsets.only(bottom: 8),
-                          child: ListTile(
-                            onTap: () => _openEditor(task),
-                            leading: Checkbox(
-                              value: task.done,
-                              semanticLabel: 'Completada: ${task.title}',
-                              onChanged: _changing.contains(task.id)
-                                  ? null
-                                  : (value) => _changeDone(task, value),
-                            ),
-                            title: Text(
-                              task.title,
-                              style: task.done
-                                  ? const TextStyle(
-                                      decoration: TextDecoration.lineThrough,
-                                    )
-                                  : null,
-                            ),
-                            subtitle: task.notes.isEmpty
-                                ? null
-                                : Text(
-                                    task.notes,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                            trailing: const Icon(Icons.chevron_right_rounded),
+                    else ...[
+                      if (feed.fromCache) ...[
+                        const Aviso(
+                          etiqueta: 'SIN CONEXIÓN',
+                          mensaje:
+                              'Mostrando datos locales. Verificando conexión.',
+                        ),
+                        const SizedBox(height: 18),
+                      ],
+                      if (tasks.isEmpty)
+                        Hoja(
+                          padding: const EdgeInsets.fromLTRB(22, 22, 22, 24),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Etiqueta('HOJA EN BLANCO'),
+                              const SizedBox(height: 8),
+                              Mensaje(
+                                'Todavía no tienes tareas.',
+                                style: theme.textTheme.titleMedium,
+                              ),
+                              const SizedBox(height: 4),
+                              Mensaje(
+                                'Pulsa «Nueva tarea» para anotar la primera.',
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: Paleta.grafito,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      else
+                        Hoja(
+                          child: Column(
+                            children: [
+                              for (final (index, task) in tasks.indexed) ...[
+                                if (index > 0) const Divider(),
+                                _TaskRow(
+                                  key: ValueKey(task.id),
+                                  task: task,
+                                  onOpen: () => _openEditor(task),
+                                  onChanged: _changing.contains(task.id)
+                                      ? null
+                                      : (value) => _changeDone(task, value),
+                                ),
+                              ],
+                            ],
                           ),
                         ),
+                    ],
                   ],
-                ],
-              );
-            },
-          );
-        },
+                );
+              },
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+String _conteo(int pending, int done) {
+  String dos(int n) => n.toString().padLeft(2, '0');
+  final pendientes = pending == 1 ? 'PENDIENTE' : 'PENDIENTES';
+  final completadas = done == 1 ? 'COMPLETADA' : 'COMPLETADAS';
+  return '${dos(pending)} $pendientes   ·   ${dos(done)} $completadas';
+}
+
+class _TaskRow extends StatelessWidget {
+  const _TaskRow({
+    super.key,
+    required this.task,
+    required this.onOpen,
+    required this.onChanged,
+  });
+
+  final Task task;
+  final VoidCallback onOpen;
+  final ValueChanged<bool?>? onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return ListTile(
+      onTap: onOpen,
+      hoverColor: Paleta.papel,
+      focusColor: Paleta.papel,
+      leading: Checkbox(
+        value: task.done,
+        semanticLabel: 'Completada: ${task.title}',
+        onChanged: onChanged,
+      ),
+      title: Text(
+        task.title,
+        style: task.done
+            ? theme.textTheme.titleMedium?.copyWith(
+                color: Paleta.grafito,
+                decoration: TextDecoration.lineThrough,
+                decorationColor: Paleta.sello,
+                decorationThickness: 2,
+              )
+            : theme.textTheme.titleMedium,
+      ),
+      subtitle: task.notes.isEmpty
+          ? null
+          : Text(
+              task.notes,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.bodySmall,
+            ),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (task.done) ...[const Sello('HECHA'), const SizedBox(width: 14)],
+          const Icon(Icons.arrow_forward, size: 18),
+        ],
       ),
     );
   }

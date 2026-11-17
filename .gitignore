@@ -59,3 +59,8 @@ google-services.json
 GoogleService-Info.plist
 lib/firebase_options.dart
 __pycache__/
+
+# Descargas locales de GitHub Actions.
+web-nube/
+regresion-clase/
+ci-artefactos/

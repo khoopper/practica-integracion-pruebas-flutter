@@ -1,0 +1,60 @@
+name: App web contra Firebase en la nube
+
+# Compila la app web con la configuración de un proyecto de Firebase de prueba.
+# Los valores se leen de los secretos del repositorio y nunca se guardan en Git.
+# El paquete resultante se sirve localmente con: python -m http.server 5000
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  compilar:
+    name: Compilar Flutter Web para Firebase en la nube
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.50.x
+          cache: true
+
+      - name: Comprobar secretos
+        env:
+          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+          FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+          FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
+          FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
+        run: |
+          for name in FIREBASE_PROJECT_ID FIREBASE_APP_ID FIREBASE_API_KEY \
+            FIREBASE_MESSAGING_SENDER_ID FIREBASE_AUTH_DOMAIN; do
+            test -n "${!name}" || { echo "Falta el secreto $name"; exit 1; }
+          done
+
+      - name: Compilar
+        env:
+          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+          FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+          FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
+          FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
+        run: |
+          flutter pub get
+          flutter build web --release --no-web-resources-cdn \
+            --dart-define=FIREBASE_USE_EMULATORS=false \
+            --dart-define=FIREBASE_PROJECT_ID="$FIREBASE_PROJECT_ID" \
+            --dart-define=FIREBASE_APP_ID="$FIREBASE_APP_ID" \
+            --dart-define=FIREBASE_API_KEY="$FIREBASE_API_KEY" \
+            --dart-define=FIREBASE_MESSAGING_SENDER_ID="$FIREBASE_MESSAGING_SENDER_ID" \
+            --dart-define=FIREBASE_AUTH_DOMAIN="$FIREBASE_AUTH_DOMAIN"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: web-nube
+          path: build/web/
+          retention-days: 1
