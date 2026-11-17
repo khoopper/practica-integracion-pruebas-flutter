@@ -59,9 +59,14 @@ class Hoja extends StatelessWidget {
       ),
       // Material propio: las filas (ListTile) pintan su hover y su ripple
       // sobre la hoja y no sobre el Scaffold que queda debajo (INC-005).
-      child: Material(
-        type: MaterialType.transparency,
-        child: Padding(padding: padding, child: child),
+      // El margen del grosor del borde evita que ese relleno tape el borde
+      // de tinta de la hoja (INC-007).
+      child: Padding(
+        padding: const EdgeInsets.all(1.5),
+        child: Material(
+          type: MaterialType.transparency,
+          child: Padding(padding: padding, child: child),
+        ),
       ),
     );
   }

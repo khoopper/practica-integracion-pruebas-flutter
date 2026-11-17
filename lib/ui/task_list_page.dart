@@ -242,6 +242,7 @@ class _TaskRow extends StatelessWidget {
     return ListTile(
       onTap: onOpen,
       hoverColor: Paleta.papel,
+      focusColor: Paleta.papel,
       leading: Checkbox(
         value: task.done,
         semanticLabel: 'Completada: ${task.title}',

@@ -213,7 +213,15 @@ ThemeData temaCuaderno() {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(1)),
       ),
-      side: const BorderSide(color: Paleta.tinta, width: 1.6),
+      // Sin halo circular: el foco y el hover engrosan el borde (INC-007).
+      side: WidgetStateBorderSide.resolveWith(
+        (estados) =>
+            estados.contains(WidgetState.focused) ||
+                estados.contains(WidgetState.hovered)
+            ? const BorderSide(color: Paleta.sello, width: 2.4)
+            : const BorderSide(color: Paleta.tinta, width: 1.6),
+      ),
+      overlayColor: const WidgetStatePropertyAll(Colors.transparent),
       fillColor: WidgetStateProperty.resolveWith(
         (estados) => estados.contains(WidgetState.selected)
             ? Paleta.sello
