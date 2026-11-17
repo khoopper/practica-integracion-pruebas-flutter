@@ -1,0 +1,80 @@
+name: Regresión INC-003
+
+# Repite la prueba de regresión de INC-003 en dos versiones:
+# 2654ecf (antes de la corrección, debe fallar) y la rama elegida (debe pasar).
+on:
+  workflow_dispatch:
+    inputs:
+      motivo:
+        description: Motivo de la ejecución (por ejemplo, repetición en clase)
+        required: false
+        default: Repetición en clase
+
+permissions:
+  contents: read
+
+jobs:
+  regresion:
+    name: INC-003 antes y después de la corrección
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      ANTES: 2654ecfdfdd421e31749439acb57a00ce395f529
+      MOTIVO: ${{ inputs.motivo }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.50.x
+          cache: true
+
+      - name: Antes de la corrección (commit 2654ecf)
+        id: antes
+        continue-on-error: true
+        run: |
+          git checkout --quiet "$ANTES"
+          flutter pub get > /dev/null
+          {
+            echo "Motivo: $MOTIVO"
+            echo "Fecha UTC: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            echo "Versión: $(git log -1 --format='%h %s')"
+          } | tee regresion-inc-003.txt
+          flutter test test/widget/task_list_test.dart --plain-name "INC-003" \
+            --reporter expanded 2>&1 | tee -a regresion-inc-003.txt
+          exit "${PIPESTATUS[0]}"
+
+      - name: Después de la corrección
+        id: despues
+        run: |
+          git checkout --quiet "${{ github.sha }}"
+          flutter pub get > /dev/null
+          {
+            echo
+            echo "Versión: $(git log -1 --format='%h %s')"
+          } | tee -a regresion-inc-003.txt
+          flutter test test/widget/task_list_test.dart --plain-name "INC-003" \
+            --reporter expanded 2>&1 | tee -a regresion-inc-003.txt
+          exit "${PIPESTATUS[0]}"
+
+      - name: Resumen
+        if: always()
+        run: |
+          {
+            echo "## Regresión INC-003"
+            echo
+            echo "| Versión | Resultado esperado | Resultado obtenido |"
+            echo "| --- | --- | --- |"
+            echo "| 2654ecf (antes de la corrección) | Falla | ${{ steps.antes.outcome == 'failure' && 'Falla' || 'Pasa' }} |"
+            echo "| ${GITHUB_SHA::7} (corregida) | Pasa | ${{ steps.despues.outcome == 'success' && 'Pasa' || 'Falla' }} |"
+          } >> "$GITHUB_STEP_SUMMARY"
+          test "${{ steps.antes.outcome }}" = failure
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: regresion-inc-003
+          path: regresion-inc-003.txt
