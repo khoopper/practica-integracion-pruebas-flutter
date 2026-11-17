@@ -1,5 +1,7 @@
 # Pendientes de clase
 
+[![Integración y pruebas](https://github.com/khoopper/practica-integracion-pruebas-flutter/actions/workflows/integracion-y-pruebas.yml/badge.svg?branch=semana16-integracion)](https://github.com/khoopper/practica-integracion-pruebas-flutter/actions/workflows/integracion-y-pruebas.yml)
+
 Práctica de integración y pruebas de **Flutter Web**. La aplicación permite crear una cuenta, iniciar sesión y gestionar tareas privadas guardadas en Firebase. La rama de la práctica es `semana16-integracion`.
 
 - **Estudiante:** Brandon Ramirez (entrega individual)
@@ -12,9 +14,16 @@ Práctica de integración y pruebas de **Flutter Web**. La aplicación permite c
 | --- | --- |
 | Casos ejecutados | 17 de 22 planificados (5 fuera del alcance: Storage y FCM), en dos rondas |
 | Flujos críticos aprobados | 100 % (17 ÷ 17) |
-| Incidencias | 4 registradas (INC-001 a INC-004), 4 corregidas con commit `fix: INC-00X` y re-probadas |
+| Incidencias | 6 registradas (INC-001 a INC-006), 6 corregidas con commit `fix: INC-00X` y re-probadas |
 | `flutter test` | 8 pruebas en verde: 3 unitarias y 5 de widget con repositorio falso |
 | `flutter analyze` | 4 diagnósticos informativos al inicio · «No issues found!» al final |
+| Integración continua | `flutter analyze`, `flutter test` y las dos rondas de casos funcionales se ejecutan en cada push en GitHub Actions |
+
+![Lista de tareas con una tarea pendiente y otra completada](docs/evidencias/capturas-aplicacion/09-actualizada.png)
+
+## Diseño
+
+La interfaz se inspira en un cuaderno de cuadrícula: fondo de papel cuadriculado, hojas blancas con borde de tinta y sombra sólida, botones y campos rectangulares, y un único acento violeta de sello para los estados («HECHA», «Completada»). Los errores y avisos usan fichas con etiqueta en lugar de colores de alerta. Las tipografías Bricolage Grotesque, Instrument Sans e IBM Plex Mono van incluidas en `assets/fonts/` con su licencia SIL Open Font License 1.1.
 
 ## Ejecutar la aplicación
 
@@ -34,6 +43,14 @@ flutter run -d chrome --web-hostname=127.0.0.1 --web-port=7357 --no-web-resource
 ```
 
 Crea una cuenta de prueba con un correo de ejemplo y una contraseña de seis o más caracteres. Abre **Nueva tarea**, guarda un título y selecciona la tarea para editarla. La casilla de la lista cambia su estado a completada. La consola de emuladores abre en [127.0.0.1:4000](http://127.0.0.1:4000).
+
+## Integración continua
+
+| Flujo | Qué hace | Cuándo |
+| --- | --- | --- |
+| [Integración y pruebas](.github/workflows/integracion-y-pruebas.yml) | `flutter analyze`, `flutter test`, compilación web y dos rondas de casos funcionales con emuladores de Auth y Firestore. Publica salidas y capturas como artefactos. | En cada push a `main` o `semana16-integracion` |
+| [Regresión INC-003](.github/workflows/regresion-inc-003.yml) | Ejecuta la prueba de INC-003 en `2654ecf` (debe fallar) y en la versión corregida (debe pasar). | Manual, para la repetición en clase |
+| [App web contra Firebase en la nube](.github/workflows/web-nube.yml) | Compila la app con la configuración de un proyecto de prueba guardada en secretos del repositorio. | Manual |
 
 ## Ejecutar las pruebas
 
@@ -84,6 +101,8 @@ firebase login
 firebase deploy --project ID_DEL_PROYECTO_DE_PRUEBA --only firestore:rules
 flutter run -d chrome --dart-define-from-file=firebase.local.json
 ```
+
+Si en el equipo no se puede ejecutar Flutter, el flujo [App web contra Firebase en la nube](.github/workflows/web-nube.yml) compila la app con los valores guardados como secretos del repositorio (`FIREBASE_PROJECT_ID`, `FIREBASE_APP_ID`, `FIREBASE_API_KEY`, `FIREBASE_MESSAGING_SENDER_ID` y `FIREBASE_AUTH_DOMAIN`). El artefacto `web-nube` se sirve con `python -m http.server 5000` y se abre en `http://localhost:5000`.
 
 Usa cuentas ficticias. Crea y modifica una tarea, y captura los datos en Firestore de Firebase Console. Guarda esas capturas en `docs/evidencias/firebase/` con nombres que indiquen la operación. Las capturas incluidas en esta entrega proceden de la consola local de Firebase.
 

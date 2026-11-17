@@ -1,3 +1,14 @@
+Historial de la rama semana16-integracion (git log --oneline), generado el 2026-11-16 antes del commit de documentación final.
+
+35539d7 style(web): íconos y colores del manifiesto con la identidad nueva
+93e73cb fix: INC-006 separar la semántica de mensajes y sellos en Flutter Web
+5658eb8 fix: INC-005 dar Material propio a la hoja para el hover de las filas
+6325ff0 style: aplicar dart format al rediseño
+951ba9d chore: ignorar descargas locales de GitHub Actions
+e65c1db ci: ejecutar análisis, pruebas y casos funcionales en GitHub Actions
+7b720ed feat(ui): rediseñar la interfaz como cuaderno de cuadrícula
+58eb651 docs: completar la plantilla oficial 08 de pruebas e incidencias
+e3141cf docs: documentar la práctica y adjuntar evidencias verificadas
 7859963 fix: INC-004 actualizar la validación al corregir el título
 0b4a012 fix: INC-003 conservar el editor hasta confirmar el guardado
 0bc028f fix: INC-002 localizar la navegación y los controles en español

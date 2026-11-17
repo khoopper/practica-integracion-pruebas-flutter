@@ -1,6 +1,6 @@
 # Plantilla de pruebas
 
-La cobertura se verifica en Flutter Web con Authentication y Firestore de Firebase Local Emulator Suite. Las cuentas y tareas son ficticias. Cada ronda inicia un contexto de navegador nuevo. CP-19 cierra y vuelve a abrir la aplicación dentro de la misma sesión del navegador y CP-18 recarga después de salir.
+La cobertura se verifica en Flutter Web con Authentication y Firestore de Firebase Local Emulator Suite. Las cuentas y tareas son ficticias. Cada ronda inicia un contexto de navegador nuevo. CP-19 cierra y vuelve a abrir la aplicación dentro de la misma sesión del navegador y CP-18 recarga después de salir. Las rondas se ejecutan automáticamente en GitHub Actions (Linux, Flutter 3.50.0, Chrome Headless Shell) con el flujo [Integración y pruebas](https://github.com/khoopper/practica-integracion-pruebas-flutter/actions/workflows/integracion-y-pruebas.yml).
 
 Un resultado aprobado requiere que coincida con lo esperado, que no ocurra ninguna excepción no controlada en el navegador y que pueda repetirse. El registro funcional identifica cada ejecución por ronda y por ID. La evidencia visual complementa el resultado de la aplicación y las operaciones en Firestore.
 
@@ -15,7 +15,7 @@ Se verificó en el orden indicado por la práctica. Ninguna incidencia fue Crít
 | 1 | Arranque e inicialización de Firebase | CP-01 | Aprobado |
 | 2 | Autenticación | CP-21, CP-02, CP-03 | Aprobado |
 | 3 | Navegación entre todas las pantallas | CP-05, CP-06 | Aprobado tras corregir INC-002 |
-| 4 | Lectura de datos | CP-08, CP-12A, CP-12B, CP-19 | Aprobado |
+| 4 | Lectura de datos | CP-08, CP-12A, CP-12B, CP-19 | Aprobado; tras el rediseño visual se corrigieron INC-005 (lista) e INC-006 (lista vacía) |
 | 5 | Escritura y actualización de datos | CP-04, CP-07, CP-09, CP-10, CP-11 | Aprobado tras corregir INC-003 e INC-004 |
 | 6 | Notificaciones push en tres estados | CP-14 a CP-17 | No ejecutado: FCM fuera del alcance |
 | 7 | Flujo completo de extremo a extremo | CP-20 | Aprobado |
@@ -46,8 +46,9 @@ Se verificó en el orden indicado por la práctica. Ninguna incidencia fue Crít
 
 ## Resultados
 
-Los **17 casos aplicables** se aprobaron en **dos rondas**, con **34 comprobaciones aprobadas**. Se cubrieron los cuatro flujos críticos y los casos negativos de contraseña, título y permisos. [Registro funcional completo](evidencias/pruebas-y-analisis/07-pruebas-funcionales.txt)
+Los **17 casos aplicables** se aprobaron en **dos rondas**, con **34 comprobaciones aprobadas**. La ejecución vigente es la del 17/11/2026 03:26 UTC sobre el diseño final (commit `35539d7`, [ejecución 44009914991](https://github.com/khoopper/practica-integracion-pruebas-flutter/actions/runs/44009914991)); la primera ejecución del 15/11/2026 obtuvo el mismo resultado con el diseño anterior. Se cubrieron los cuatro flujos críticos y los casos negativos de contraseña, título y permisos. [Registro funcional completo](evidencias/pruebas-y-analisis/07-pruebas-funcionales.txt)
 
 - El análisis inicial mostró 0 errores, 0 advertencias y 4 diagnósticos informativos. El análisis final quedó sin diagnósticos. [Análisis inicial](evidencias/pruebas-y-analisis/01-flutter-analyze-inicial.txt) · [Análisis final](evidencias/pruebas-y-analisis/04-flutter-analyze-final.txt)
-- Pasaron 3 pruebas unitarias y 5 de widget. [Salida de flutter test](evidencias/pruebas-y-analisis/05-flutter-test-final.txt)
-- El arranque se realizó con `flutter run`. El registro contiene la compilación y la dirección servida. [Ejecución](evidencias/pruebas-y-analisis/06-flutter-run.txt)
+- Pasaron 3 pruebas unitarias y 5 de widget. [Salida de flutter test](evidencias/pruebas-y-analisis/05-flutter-test-final.txt) · [Salida en GitHub Actions con el diseño final](evidencias/pruebas-y-analisis/10-flutter-test-ci.txt) · [Análisis en GitHub Actions](evidencias/pruebas-y-analisis/11-flutter-analyze-ci.txt)
+- El arranque se realizó con `flutter run`. El registro contiene la compilación y la dirección servida. [Ejecución](evidencias/pruebas-y-analisis/06-flutter-run.txt) · [Compilación web en GitHub Actions](evidencias/pruebas-y-analisis/15-flutter-build-web-ci.txt)
+- Se registraron y corrigieron 6 incidencias; el detalle está en [04-registro-incidencias.md](04-registro-incidencias.md).
