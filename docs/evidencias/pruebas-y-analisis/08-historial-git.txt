@@ -1,0 +1,7 @@
+7859963 fix: INC-004 actualizar la validación al corregir el título
+0b4a012 fix: INC-003 conservar el editor hasta confirmar el guardado
+0bc028f fix: INC-002 localizar la navegación y los controles en español
+2654ecf test: reproducir la navegación en inglés y la salida durante el guardado
+5fea62d fix: INC-001 adoptar el paquete Material de Flutter 3.50
+5a36bf9 feat: integrar sesiones y tareas de clase con Firebase
+aeda28e chore: iniciar proyecto Flutter y configurar emuladores Firebase

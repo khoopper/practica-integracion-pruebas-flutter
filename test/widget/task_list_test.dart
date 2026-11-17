@@ -1,4 +1,6 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
+
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:practica_integracion_pruebas_flutter/data/task_repository.dart';
 import 'package:practica_integracion_pruebas_flutter/domain/task.dart';
@@ -6,10 +8,15 @@ import 'package:practica_integracion_pruebas_flutter/main.dart';
 import 'package:practica_integracion_pruebas_flutter/ui/task_list_page.dart';
 
 class FakeTaskRepository implements TaskRepository {
-  FakeTaskRepository({this.tasks = const [], this.failFirstRead = false});
+  FakeTaskRepository({
+    this.tasks = const [],
+    this.failFirstRead = false,
+    this.createResult,
+  });
 
   final List<Task> tasks;
   final bool failFirstRead;
+  final Completer<void>? createResult;
   final created = <TaskDraft>[];
   int reads = 0;
 
@@ -23,7 +30,10 @@ class FakeTaskRepository implements TaskRepository {
   }
 
   @override
-  Future<void> create(TaskDraft draft) async => created.add(draft);
+  Future<void> create(TaskDraft draft) async {
+    created.add(draft);
+    await createResult?.future;
+  }
 
   @override
   Future<void> edit(String id, TaskDraft draft) async =>
@@ -64,6 +74,8 @@ void main() {
     expect(repository.created, isEmpty);
 
     await tester.enterText(find.byType(TextFormField).first, '  Ensayo  ');
+    await tester.pumpAndSettle();
+    expect(find.text('Escribe al menos 3 caracteres.'), findsNothing);
     await tester.tap(find.text('Guardar tarea'));
     await tester.pumpAndSettle();
     expect(repository.created.single.title, 'Ensayo');
@@ -103,6 +115,41 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Todavía no tienes tareas.'), findsOneWidget);
     expect(repository.reads, 2);
+    expect(tester.takeException(), isNull);
+  });
+  testWidgets('INC-002 el botón de navegación está localizado', (tester) async {
+    await showList(tester, FakeTaskRepository());
+    await tester.tap(find.text('Nueva tarea'));
+    await tester.pumpAndSettle();
+
+    final context = tester.element(find.byType(BackButton));
+    expect(MaterialLocalizations.of(context).backButtonTooltip, 'Atrás');
+  });
+
+  testWidgets('INC-003 volver espera a que termine el guardado', (
+    tester,
+  ) async {
+    final write = Completer<void>();
+    final repository = FakeTaskRepository(createResult: write);
+    await showList(tester, repository);
+    await tester.tap(find.text('Nueva tarea'));
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.byType(TextFormField).first,
+      'Prueba de demora',
+    );
+    await tester.tap(find.text('Guardar tarea'));
+    await tester.pump();
+    expect(find.text('Guardando…'), findsOneWidget);
+    expect(repository.created, hasLength(1));
+
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    expect(find.text('Guardando…'), findsOneWidget);
+
+    write.complete();
+    await tester.pumpAndSettle();
+    expect(find.text('Mis tareas'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }

@@ -1,0 +1,10 @@
+00:00 +0: loading /workspace/scratch/0ba7c85498b0/practica-integracion-pruebas-flutter/test/widget/task_list_test.dart
+00:00 +0: /workspace/scratch/0ba7c85498b0/practica-integracion-pruebas-flutter/test/widget/task_list_test.dart: la lista vacía acepta una tarea tras validar el formulario
+00:00 +1: /workspace/scratch/0ba7c85498b0/practica-integracion-pruebas-flutter/test/widget/task_list_test.dart: la lista vacía acepta una tarea tras validar el formulario
+00:00 +2: /workspace/scratch/0ba7c85498b0/practica-integracion-pruebas-flutter/test/widget/task_list_test.dart: la lista vacía acepta una tarea tras validar el formulario
+00:00 +3: /workspace/scratch/0ba7c85498b0/practica-integracion-pruebas-flutter/test/widget/task_list_test.dart: la lista vacía acepta una tarea tras validar el formulario
+00:01 +4: /workspace/scratch/0ba7c85498b0/practica-integracion-pruebas-flutter/test/widget/task_list_test.dart: una tarea completada abre el detalle y permite volver
+00:01 +5: /workspace/scratch/0ba7c85498b0/practica-integracion-pruebas-flutter/test/widget/task_list_test.dart: el error de lectura informa y permite reintentar
+00:01 +6: /workspace/scratch/0ba7c85498b0/practica-integracion-pruebas-flutter/test/widget/task_list_test.dart: INC-002 el botón de navegación está localizado
+00:02 +7: /workspace/scratch/0ba7c85498b0/practica-integracion-pruebas-flutter/test/widget/task_list_test.dart: INC-003 volver espera a que termine el guardado
+00:02 +8: All tests passed!
