@@ -2,6 +2,20 @@
 
 Práctica de integración y pruebas de **Flutter Web**. La aplicación permite crear una cuenta, iniciar sesión y gestionar tareas privadas guardadas en Firebase. La rama de la práctica es `semana16-integracion`.
 
+- **Estudiante:** Brandon Ramirez (entrega individual)
+- **Repositorio:** [github.com/khoopper/practica-integracion-pruebas-flutter](https://github.com/khoopper/practica-integracion-pruebas-flutter) · rama `semana16-integracion`
+- **Servicios de Firebase:** Authentication (correo y contraseña) y Cloud Firestore. Storage y FCM quedan fuera del alcance.
+
+## Resultados en breve
+
+| Indicador | Resultado |
+| --- | --- |
+| Casos ejecutados | 17 de 22 planificados (5 fuera del alcance: Storage y FCM), en dos rondas |
+| Flujos críticos aprobados | 100 % (17 ÷ 17) |
+| Incidencias | 4 registradas (INC-001 a INC-004), 4 corregidas con commit `fix: INC-00X` y re-probadas |
+| `flutter test` | 8 pruebas en verde: 3 unitarias y 5 de widget con repositorio falso |
+| `flutter analyze` | 4 diagnósticos informativos al inicio · «No issues found!» al final |
+
 ## Ejecutar la aplicación
 
 Se verificó con Flutter 3.50.0, Dart 3.14.0, Firebase CLI 15.36.0, Node.js 24, Java 21 y Chrome Headless Shell. Para abrirla manualmente se puede usar Chrome. Firebase usa por defecto el proyecto local `demo-practica-flutter`.
@@ -50,7 +64,9 @@ Puedes pasar `--chrome RUTA_DEL_EJECUTABLE` para usar otro Chromium. `--evidenci
 | --- | --- |
 | [Declaración de alcance](docs/01-declaracion-alcance.md) | Módulos, plataforma y entorno |
 | [Mapa de flujos críticos](docs/02-mapa-flujos-criticos.md) | Recorridos y casos asociados |
-| [Plantilla de pruebas](docs/03-plantilla-pruebas.md) | Entradas, expectativas, resultados y evidencia |
+| [Plantilla de pruebas](docs/03-plantilla-pruebas.md) | Integración incremental, entradas, expectativas, resultados y evidencia |
+| [Plantilla oficial 08 (Markdown)](docs/08-plantilla-pruebas-e-incidencias.md) | Encabezado, alcance, registro de pruebas e incidencias, resumen y ficha de cada incidencia |
+| [Plantilla oficial 08 (CSV)](docs/08_Plantilla_pruebas_e_incidencias.csv) | Las mismas filas del registro para abrir en Excel u hojas de cálculo |
 | [Registro de incidencias](docs/04-registro-incidencias.md) | Causas, correcciones, commits y regresiones |
 | [Reflexión final](docs/05-reflexion-final.md) | Aprendizaje de la incidencia de guardado |
 | [Capturas de la aplicación](docs/evidencias/capturas-aplicacion/) | Evidencia del flujo principal |
@@ -71,21 +87,25 @@ flutter run -d chrome --dart-define-from-file=firebase.local.json
 
 Usa cuentas ficticias. Crea y modifica una tarea, y captura los datos en Firestore de Firebase Console. Guarda esas capturas en `docs/evidencias/firebase/` con nombres que indiquen la operación. Las capturas incluidas en esta entrega proceden de la consola local de Firebase.
 
-## Publicar en GitHub
-
-El archivo `.bundle` del paquete trae el historial con `main` y `semana16-integracion`. Desde la carpeta donde descomprimiste el paquete, restaura el repositorio e inicia sesión en GitHub CLI.
+## Clonar el repositorio
 
 ```bash
-git clone --branch semana16-integracion practica-integracion-pruebas-flutter.bundle entrega-flutter
-cd entrega-flutter
-git remote remove origin
-gh auth login
-gh repo create practica-integracion-pruebas-flutter --public --source=. --remote=origin
-git push origin semana16-integracion:main
-git push -u origin semana16-integracion
+git clone --branch semana16-integracion https://github.com/khoopper/practica-integracion-pruebas-flutter.git
 ```
 
-Verifica el enlace público antes de compartirlo con el docente. Si el trabajo se realiza en pareja, agrega a la otra persona como colaboradora y conserva sus commits. Vuelve a ejecutar en clase la regresión de INC-003 y registra la evidencia de esa repetición.
+Las correcciones se identifican en el historial con el formato `fix: INC-00X descripción`.
+
+```bash
+git log --oneline --grep "INC-"
+```
+
+## Lista de autoverificación
+
+- [x] Declaré mi alcance real ([01](docs/01-declaracion-alcance.md) y sección 0 de la [plantilla 08](docs/08-plantilla-pruebas-e-incidencias.md)).
+- [x] Cada caso tiene datos de entrada y resultado esperado concretos.
+- [x] Registré el resultado obtenido de cada caso, no solo «ok».
+- [x] Cada incidencia tiene causa y corrección, con commit y prueba de regresión.
+- [x] Las evidencias se pueden abrir y cada caso enlaza la que lo prueba.
 
 ## Referencias
 

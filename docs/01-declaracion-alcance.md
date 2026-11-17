@@ -15,4 +15,4 @@
 
 Las vistas verificadas son acceso, registro, lista, formulario de creación y detalle editable. La ejecución usa el proyecto `demo-practica-flutter` y cuentas ficticias. El modo con Firebase en la nube queda configurado mediante las opciones web locales del proyecto. Las capturas disponibles corresponden a Firebase Local Emulator Suite.
 
-Los casos de Storage y FCM tienen estado **No aplica**. La captura de Firebase Console en la nube y la repetición supervisada en clase quedan pendientes.
+Los casos de Storage (CP-13) y FCM (CP-14 a CP-17) tienen estado **No ejecutado** con el motivo «fuera del alcance declarado». La declaración también está en la [plantilla oficial 08](08-plantilla-pruebas-e-incidencias.md#0-declaración-de-alcance). La captura de Firebase Console en la nube y la repetición supervisada en clase quedan pendientes.
