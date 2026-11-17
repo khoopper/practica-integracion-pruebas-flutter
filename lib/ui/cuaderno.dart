@@ -55,9 +55,7 @@ class Hoja extends StatelessWidget {
         color: Paleta.hoja,
         borderRadius: BorderRadius.circular(2),
         border: Border.all(color: Paleta.tinta, width: 1.5),
-        boxShadow: const [
-          BoxShadow(color: Paleta.sello, offset: Offset(6, 6)),
-        ],
+        boxShadow: const [BoxShadow(color: Paleta.sello, offset: Offset(6, 6))],
       ),
       child: Padding(padding: padding, child: child),
     );

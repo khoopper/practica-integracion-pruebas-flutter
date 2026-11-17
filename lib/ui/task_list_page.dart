@@ -136,7 +136,10 @@ class _TaskListPageState extends State<TaskListPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text('ERROR DE LECTURA', style: Letra.etiqueta),
+                            const Text(
+                              'ERROR DE LECTURA',
+                              style: Letra.etiqueta,
+                            ),
                             const SizedBox(height: 6),
                             const Text('No se pudieron cargar las tareas.'),
                             const SizedBox(height: 4),
@@ -171,7 +174,10 @@ class _TaskListPageState extends State<TaskListPage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text('HOJA EN BLANCO', style: Letra.etiqueta),
+                              const Text(
+                                'HOJA EN BLANCO',
+                                style: Letra.etiqueta,
+                              ),
                               const SizedBox(height: 8),
                               Text(
                                 'Todavía no tienes tareas.',

@@ -92,10 +92,7 @@ class _AuthPageState extends State<AuthPage> {
           ),
         ),
         const SizedBox(height: 22),
-        Text(
-          'Pendientes\nde clase',
-          style: theme.textTheme.displaySmall,
-        ),
+        Text('Pendientes\nde clase', style: theme.textTheme.displaySmall),
         const SizedBox(height: 14),
         ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 340),
@@ -147,8 +144,7 @@ class _AuthPageState extends State<AuthPage> {
                 textInputAction: TextInputAction.next,
                 validator: (value) {
                   final email = value?.trim() ?? '';
-                  if (!RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$')
-                      .hasMatch(email)) {
+                  if (!RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$').hasMatch(email)) {
                     return 'Escribe un correo válido.';
                   }
                   return null;

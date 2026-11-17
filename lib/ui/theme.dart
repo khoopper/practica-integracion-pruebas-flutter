@@ -97,14 +97,12 @@ ThemeData temaCuaderno() {
       ),
     ),
     backgroundColor: WidgetStateProperty.resolveWith(
-      (estados) => estados.contains(WidgetState.disabled)
-          ? Paleta.regla
-          : Paleta.tinta,
+      (estados) =>
+          estados.contains(WidgetState.disabled) ? Paleta.regla : Paleta.tinta,
     ),
     foregroundColor: WidgetStateProperty.resolveWith(
-      (estados) => estados.contains(WidgetState.disabled)
-          ? Paleta.grafito
-          : Paleta.hoja,
+      (estados) =>
+          estados.contains(WidgetState.disabled) ? Paleta.grafito : Paleta.hoja,
     ),
     overlayColor: WidgetStateProperty.resolveWith(
       (estados) => estados.contains(WidgetState.pressed)
@@ -130,9 +128,8 @@ ThemeData temaCuaderno() {
       ),
     ),
     foregroundColor: WidgetStateProperty.resolveWith(
-      (estados) => estados.contains(WidgetState.disabled)
-          ? Paleta.regla
-          : Paleta.sello,
+      (estados) =>
+          estados.contains(WidgetState.disabled) ? Paleta.regla : Paleta.sello,
     ),
   );
 

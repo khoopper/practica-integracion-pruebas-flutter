@@ -100,12 +100,12 @@ class _TaskEditorPageState extends State<TaskEditorPage> {
         ),
         body: PapelCuadriculado(
           child: Align(
-          alignment: Alignment.topCenter,
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(20, 34, 26, 48),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 640),
-              child: Hoja(
+            alignment: Alignment.topCenter,
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(20, 34, 26, 48),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 640),
+                child: Hoja(
                   padding: const EdgeInsets.fromLTRB(26, 22, 26, 18),
                   child: Form(
                     key: _form,
