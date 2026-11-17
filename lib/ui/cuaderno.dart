@@ -57,7 +57,12 @@ class Hoja extends StatelessWidget {
         border: Border.all(color: Paleta.tinta, width: 1.5),
         boxShadow: const [BoxShadow(color: Paleta.sello, offset: Offset(6, 6))],
       ),
-      child: Padding(padding: padding, child: child),
+      // Material propio: las filas (ListTile) pintan su hover y su ripple
+      // sobre la hoja y no sobre el Scaffold que queda debajo (INC-005).
+      child: Material(
+        type: MaterialType.transparency,
+        child: Padding(padding: padding, child: child),
+      ),
     );
   }
 }
