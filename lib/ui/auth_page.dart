@@ -115,10 +115,7 @@ class _AuthPageState extends State<AuthPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                _registering ? 'CUENTA NUEVA' : 'ACCESO',
-                style: Letra.etiqueta,
-              ),
+              Etiqueta(_registering ? 'CUENTA NUEVA' : 'ACCESO'),
               const SizedBox(height: 6),
               Text(title, style: theme.textTheme.headlineSmall),
               const SizedBox(height: 6),

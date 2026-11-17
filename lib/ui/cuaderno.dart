@@ -77,14 +77,43 @@ class Sello extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = activo ? Paleta.sello : Paleta.grafito;
-    return DecoratedBox(
-      decoration: BoxDecoration(border: Border.all(color: color, width: 1.5)),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(7, 3, 7, 2),
-        child: Text(texto, style: Letra.etiqueta.copyWith(color: color)),
+    // Nodo accesible propio: el estado no se mezcla con el texto vecino.
+    return Semantics(
+      container: true,
+      child: DecoratedBox(
+        decoration: BoxDecoration(border: Border.all(color: color, width: 1.5)),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(7, 3, 7, 2),
+          child: Text(texto, style: Letra.etiqueta.copyWith(color: color)),
+        ),
       ),
     );
   }
+}
+
+/// Etiqueta decorativa de ficha. Se oculta a los lectores de pantalla porque
+/// repite lo que ya dicen el título o el mensaje que acompaña (INC-006).
+class Etiqueta extends StatelessWidget {
+  const Etiqueta(this.texto, {super.key});
+
+  final String texto;
+
+  @override
+  Widget build(BuildContext context) =>
+      ExcludeSemantics(child: Text(texto, style: Letra.etiqueta));
+}
+
+/// Mensaje con nodo accesible propio para que Flutter Web no lo una con el
+/// texto vecino en un solo elemento (INC-006).
+class Mensaje extends StatelessWidget {
+  const Mensaje(this.texto, {super.key, this.style});
+
+  final String texto;
+  final TextStyle? style;
+
+  @override
+  Widget build(BuildContext context) =>
+      Semantics(container: true, child: Text(texto, style: style));
 }
 
 /// Aviso con etiqueta de ficha: errores y estados de conexión.

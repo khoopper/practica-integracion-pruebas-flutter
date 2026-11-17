@@ -116,9 +116,8 @@ class _TaskEditorPageState extends State<TaskEditorPage> {
                         Row(
                           children: [
                             Expanded(
-                              child: Text(
+                              child: Etiqueta(
                                 task == null ? 'TAREA NUEVA' : 'FICHA DE TAREA',
-                                style: Letra.etiqueta,
                               ),
                             ),
                             if (task != null)
