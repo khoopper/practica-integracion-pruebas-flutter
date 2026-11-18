@@ -47,10 +47,16 @@ def fill(page, label, value):
     field = page.locator('input, textarea').and_(
         page.get_by_label(re.compile('^' + re.escape(label)))
     ).last
+    # Flutter Web conecta el campo con su editor de texto unos cuadros
+    # después del clic. Si se escribe antes, el texto queda solo en el DOM y
+    # Flutter lo reemplaza con el valor anterior; por eso se espera antes de
+    # escribir y se comprueba el valor otra vez después de una pausa.
     for _ in range(3):
         field.click(force=True)
+        page.wait_for_timeout(200)
         page.keyboard.press('Control+a')
         page.keyboard.insert_text(value)
+        page.wait_for_timeout(300)
         if field.evaluate('(node, expected) => node.value === expected', value):
             return
     raise AssertionError(f'No se pudo confirmar la entrada del campo {label}.')
@@ -179,6 +185,10 @@ def round_trip(context, number, photos):
         assert not errors, f'Excepción no controlada: {errors[0]}'
         if photos and photo:
             screenshot(page, 'capturas-aplicacion/' + photo)
+        else:
+            # La ronda 2 no toma capturas; esta pausa le da el mismo margen
+            # que tiene la ronda 1 para terminar transiciones entre casos.
+            page.wait_for_timeout(300)
         seen.append(case)
         print(f'R{number} | {case} | Aprobado | {observed}', flush=True)
 
