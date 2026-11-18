@@ -18,7 +18,9 @@
 4. **Comprobar.** El fake retrasa la confirmación con un `Completer`. Con la misma escritura pendiente se verificó que Atrás abandonaba el editor en la versión inicial.
 5. **Corregir y proteger.** `PopScope` conserva el editor durante la operación. La regresión comprueba que, una vez completado el futuro, la app vuelve a **Mis tareas** con una sola solicitud de creación.
 
-La regresión se ejecutó antes y después en el entorno de pruebas. La repetición supervisada en clase se registra cuando se realice.
+La regresión se ejecutó antes y después en el entorno de pruebas.
+
+**Repetición en clase (17/11/2026, 18:40 h, UTC-6).** Se repitió la regresión de INC-003 frente al docente con el flujo «Regresión INC-003» de GitHub Actions: en `2654ecf` la prueba falló (`Found 0 widgets with text "Guardando…"`) y en la versión corregida `de8bd0d` pasó (`All tests passed!`). Estado: Corregido-Aprobado. [Ejecución 44209724571](https://github.com/khoopper/practica-integracion-pruebas-flutter/actions/runs/44209724571) · [registro](evidencias/pruebas-y-analisis/14-inc-003-repeticion-en-clase.txt)
 
 - [Análisis inicial](evidencias/pruebas-y-analisis/01-flutter-analyze-inicial.txt) y [verificación de INC-001](evidencias/pruebas-y-analisis/02-contexto-inc-001.txt).
 - [Regresiones antes de las correcciones](evidencias/pruebas-y-analisis/03-regresiones-antes.txt).
