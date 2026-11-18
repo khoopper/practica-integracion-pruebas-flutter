@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:practica_integracion_pruebas_flutter/data/task_repository.dart';
 import 'package:practica_integracion_pruebas_flutter/domain/task.dart';
 import 'package:practica_integracion_pruebas_flutter/main.dart';
+import 'package:practica_integracion_pruebas_flutter/ui/cuaderno.dart';
 import 'package:practica_integracion_pruebas_flutter/ui/task_list_page.dart';
 
 class FakeTaskRepository implements TaskRepository {
@@ -151,5 +152,51 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Mis tareas'), findsOneWidget);
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('INC-007 las filas no tapan el borde de la hoja', (
+    tester,
+  ) async {
+    await showList(
+      tester,
+      FakeTaskRepository(
+        tasks: const [
+          Task(id: '2', title: 'Leer apuntes', notes: '', done: false),
+          Task(
+            id: '1',
+            title: 'Entregar ensayo revisado',
+            notes: 'Versión final',
+            done: true,
+          ),
+        ],
+      ),
+    );
+
+    // El hover y el foco de cada fila se pintan en todo su rectángulo; la
+    // fila debe empezar dentro del borde de tinta de 1.5 px de la hoja.
+    final filas = find.byType(ListTile);
+    final hoja = tester.getRect(
+      find.ancestor(of: filas.first, matching: find.byType(Hoja)),
+    );
+    final primera = tester.getRect(filas.first);
+    final ultima = tester.getRect(filas.last);
+    const borde = 1.5 - 0.01;
+    for (final fila in [primera, ultima]) {
+      expect(fila.left - hoja.left, greaterThanOrEqualTo(borde));
+      expect(hoja.right - fila.right, greaterThanOrEqualTo(borde));
+    }
+    expect(primera.top - hoja.top, greaterThanOrEqualTo(borde));
+    expect(hoja.bottom - ultima.bottom, greaterThanOrEqualTo(borde));
+
+    // La casilla no dibuja el halo circular: el foco engrosa su borde.
+    final tema = Theme.of(tester.element(find.byType(Checkbox).first));
+    final casilla = tema.checkboxTheme;
+    double? grosor(Set<WidgetState> estados) =>
+        WidgetStateProperty.resolveAs(casilla.side, estados)?.width;
+    for (final estado in [WidgetState.hovered, WidgetState.focused]) {
+      expect(casilla.overlayColor?.resolve({estado}), Colors.transparent);
+      expect(grosor({estado}), 2.4);
+    }
+    expect(grosor(<WidgetState>{}), 1.6);
   });
 }
