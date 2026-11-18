@@ -9,6 +9,7 @@ from secrets import token_hex, token_urlsafe
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
+from playwright.sync_api import TimeoutError as PlaywrightTimeout
 from playwright.sync_api import expect, sync_playwright
 
 APP = 'http://127.0.0.1:7357'
@@ -67,6 +68,25 @@ def open_signup(page):
         except AssertionError:
             continue
     raise AssertionError('No se abrió el formulario de cuenta nueva.')
+
+
+def submit_auth(page, name, endpoint):
+    # En la ronda 2 de GitHub Actions, el primer clic después de cargar la
+    # página a veces no llega a Flutter Web. Se repite el clic solo si la
+    # solicitud a Auth no salió en 5 s, para no duplicar un registro.
+    for _ in range(3):
+        try:
+            with page.expect_request(
+                lambda req: endpoint in req.url and req.method == 'POST',
+                timeout=5000,
+            ) as sent:
+                press(page, name)
+        except PlaywrightTimeout:
+            continue
+        response = sent.value.response()
+        assert response is not None, f'Auth no respondió a {endpoint}.'
+        return response
+    raise AssertionError(f'«{name}» no envió la solicitud {endpoint}.')
 
 
 def login_fields(page, email, password):
@@ -170,9 +190,8 @@ def round_trip(context, number, photos):
 
     open_signup(page)
     login_fields(page, email, password)
-    with page.expect_response(lambda res: '/accounts:signUp' in res.url) as hit:
-        press(page, 'Crear cuenta')
-    assert hit.value.status == 200
+    signup = submit_auth(page, 'Crear cuenta', '/accounts:signUp')
+    assert signup.status == 200
     expect(button(page, 'Nueva tarea')).to_be_visible()
     passed('CP-21', 'Auth devolvió HTTP 200, creó al usuario A y abrió Mis tareas.')
 
@@ -181,18 +200,16 @@ def round_trip(context, number, photos):
     page.reload(wait_until='domcontentloaded')
     expect(button(page, 'Iniciar sesión')).to_be_visible(timeout=20000)
     login_fields(page, email, password + 'incorrecta')
-    with page.expect_response(lambda res: '/accounts:signInWithPassword' in res.url) as hit:
-        press(page, 'Iniciar sesión')
-    assert hit.value.status == 400
+    denied = submit_auth(page, 'Iniciar sesión', '/accounts:signInWithPassword')
+    assert denied.status == 400
     shown(page, 'El correo o la contraseña son incorrectos.')
     expect(button(page, 'Nueva tarea')).to_have_count(0)
     passed('CP-03', 'Auth devolvió HTTP 400 con mensaje entendible y conservó el acceso.', '02-clave-incorrecta.png')
 
     fill(page, 'Contraseña', password)
-    with page.expect_response(lambda res: '/accounts:signInWithPassword' in res.url) as hit:
-        press(page, 'Iniciar sesión')
-    assert hit.value.status == 200
-    user = hit.value.json()
+    signin = submit_auth(page, 'Iniciar sesión', '/accounts:signInWithPassword')
+    assert signin.status == 200
+    user = signin.json()
     token, uid = user['idToken'], user['localId']
     expect(button(page, 'Nueva tarea')).to_be_visible()
     passed('CP-02', 'Auth devolvió HTTP 200 y abrió Mis tareas con el usuario A.')
