@@ -55,6 +55,20 @@ def fill(page, label, value):
     raise AssertionError(f'No se pudo confirmar la entrada del campo {label}.')
 
 
+def open_signup(page):
+    # El clic que cambia a «Crear cuenta» puede perderse si la semántica de
+    # Flutter Web todavía se está montando; se confirma el cambio de modo
+    # antes de llenar el formulario para no enviar el acceso en su lugar.
+    for _ in range(3):
+        press(page, 'Crear cuenta')
+        try:
+            expect(button(page, 'Ya tengo cuenta')).to_be_visible(timeout=5000)
+            return
+        except AssertionError:
+            continue
+    raise AssertionError('No se abrió el formulario de cuenta nueva.')
+
+
 def login_fields(page, email, password):
     fill(page, 'Correo electrónico', email)
     fill(page, 'Contraseña', password)
@@ -154,7 +168,7 @@ def round_trip(context, number, photos):
     expect(button(page, 'Iniciar sesión')).to_be_visible(timeout=30000)
     passed('CP-01', 'Firebase inició y se mostró el formulario de acceso.', '01-acceso.png')
 
-    press(page, 'Crear cuenta')
+    open_signup(page)
     login_fields(page, email, password)
     with page.expect_response(lambda res: '/accounts:signUp' in res.url) as hit:
         press(page, 'Crear cuenta')
