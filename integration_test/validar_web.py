@@ -9,6 +9,7 @@ from secrets import token_hex, token_urlsafe
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
+from playwright.sync_api import TimeoutError as PlaywrightTimeout
 from playwright.sync_api import expect, sync_playwright
 
 APP = 'http://127.0.0.1:7357'
@@ -46,13 +47,52 @@ def fill(page, label, value):
     field = page.locator('input, textarea').and_(
         page.get_by_label(re.compile('^' + re.escape(label)))
     ).last
+    # Flutter Web conecta el campo con su editor de texto unos cuadros
+    # después del clic. Si se escribe antes, el texto queda solo en el DOM y
+    # Flutter lo reemplaza con el valor anterior; por eso se espera antes de
+    # escribir y se comprueba el valor otra vez después de una pausa.
     for _ in range(3):
         field.click(force=True)
+        page.wait_for_timeout(200)
         page.keyboard.press('Control+a')
         page.keyboard.insert_text(value)
+        page.wait_for_timeout(300)
         if field.evaluate('(node, expected) => node.value === expected', value):
             return
     raise AssertionError(f'No se pudo confirmar la entrada del campo {label}.')
+
+
+def open_signup(page):
+    # El clic que cambia a «Crear cuenta» puede perderse si la semántica de
+    # Flutter Web todavía se está montando; se confirma el cambio de modo
+    # antes de llenar el formulario para no enviar el acceso en su lugar.
+    for _ in range(3):
+        press(page, 'Crear cuenta')
+        try:
+            expect(button(page, 'Ya tengo cuenta')).to_be_visible(timeout=5000)
+            return
+        except AssertionError:
+            continue
+    raise AssertionError('No se abrió el formulario de cuenta nueva.')
+
+
+def submit_auth(page, name, endpoint):
+    # En la ronda 2 de GitHub Actions, el primer clic después de cargar la
+    # página a veces no llega a Flutter Web. Se repite el clic solo si la
+    # solicitud a Auth no salió en 5 s, para no duplicar un registro.
+    for _ in range(3):
+        try:
+            with page.expect_request(
+                lambda req: endpoint in req.url and req.method == 'POST',
+                timeout=5000,
+            ) as sent:
+                press(page, name)
+        except PlaywrightTimeout:
+            continue
+        response = sent.value.response()
+        assert response is not None, f'Auth no respondió a {endpoint}.'
+        return response
+    raise AssertionError(f'«{name}» no envió la solicitud {endpoint}.')
 
 
 def login_fields(page, email, password):
@@ -145,6 +185,10 @@ def round_trip(context, number, photos):
         assert not errors, f'Excepción no controlada: {errors[0]}'
         if photos and photo:
             screenshot(page, 'capturas-aplicacion/' + photo)
+        else:
+            # La ronda 2 no toma capturas; esta pausa le da el mismo margen
+            # que tiene la ronda 1 para terminar transiciones entre casos.
+            page.wait_for_timeout(300)
         seen.append(case)
         print(f'R{number} | {case} | Aprobado | {observed}', flush=True)
 
@@ -154,11 +198,10 @@ def round_trip(context, number, photos):
     expect(button(page, 'Iniciar sesión')).to_be_visible(timeout=30000)
     passed('CP-01', 'Firebase inició y se mostró el formulario de acceso.', '01-acceso.png')
 
-    press(page, 'Crear cuenta')
+    open_signup(page)
     login_fields(page, email, password)
-    with page.expect_response(lambda res: '/accounts:signUp' in res.url) as hit:
-        press(page, 'Crear cuenta')
-    assert hit.value.status == 200
+    signup = submit_auth(page, 'Crear cuenta', '/accounts:signUp')
+    assert signup.status == 200
     expect(button(page, 'Nueva tarea')).to_be_visible()
     passed('CP-21', 'Auth devolvió HTTP 200, creó al usuario A y abrió Mis tareas.')
 
@@ -167,18 +210,16 @@ def round_trip(context, number, photos):
     page.reload(wait_until='domcontentloaded')
     expect(button(page, 'Iniciar sesión')).to_be_visible(timeout=20000)
     login_fields(page, email, password + 'incorrecta')
-    with page.expect_response(lambda res: '/accounts:signInWithPassword' in res.url) as hit:
-        press(page, 'Iniciar sesión')
-    assert hit.value.status == 400
+    denied = submit_auth(page, 'Iniciar sesión', '/accounts:signInWithPassword')
+    assert denied.status == 400
     shown(page, 'El correo o la contraseña son incorrectos.')
     expect(button(page, 'Nueva tarea')).to_have_count(0)
     passed('CP-03', 'Auth devolvió HTTP 400 con mensaje entendible y conservó el acceso.', '02-clave-incorrecta.png')
 
     fill(page, 'Contraseña', password)
-    with page.expect_response(lambda res: '/accounts:signInWithPassword' in res.url) as hit:
-        press(page, 'Iniciar sesión')
-    assert hit.value.status == 200
-    user = hit.value.json()
+    signin = submit_auth(page, 'Iniciar sesión', '/accounts:signInWithPassword')
+    assert signin.status == 200
+    user = signin.json()
     token, uid = user['idToken'], user['localId']
     expect(button(page, 'Nueva tarea')).to_be_visible()
     passed('CP-02', 'Auth devolvió HTTP 200 y abrió Mis tareas con el usuario A.')

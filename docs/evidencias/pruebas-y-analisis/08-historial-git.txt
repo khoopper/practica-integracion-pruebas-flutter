@@ -1,5 +1,13 @@
-Historial de la rama semana16-integracion (git log --oneline), generado el 2026-11-16 antes del commit de documentación final.
+Historial de la rama semana16-integracion (git log --oneline), generado el 2026-11-17 antes del commit de documentación final.
 
+7b8db00 style: aplicar dart format a la prueba de INC-007
+2f37347 test: esperar a que Flutter Web conecte cada campo antes de escribir
+05a3968 test: repetir el clic de Auth si Flutter Web no envía la solicitud
+d2822e8 test: regresión de INC-007 para el borde de la hoja y la casilla
+cfbf6e0 test: confirmar el cambio a «Crear cuenta» antes de registrar
+5e26da1 docs: agregar capturas de Firestore en la nube (tarea creada y modificada)
+94b92c4 fix: INC-007 mantener visible el borde de la hoja y quitar el halo circular
+e9e3b3b docs: registrar INC-005 e INC-006 y actualizar evidencias con el diseño final
 35539d7 style(web): íconos y colores del manifiesto con la identidad nueva
 93e73cb fix: INC-006 separar la semántica de mensajes y sellos en Flutter Web
 5658eb8 fix: INC-005 dar Material propio a la hoja para el hover de las filas
