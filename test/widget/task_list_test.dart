@@ -154,9 +154,7 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('INC-007 las filas no tapan el borde de la hoja', (
-    tester,
-  ) async {
+  testWidgets('INC-007 las filas no tapan el borde de la hoja', (tester) async {
     await showList(
       tester,
       FakeTaskRepository(
