@@ -1,4 +1,4 @@
-Fecha local: 2026-11-17T03:26:23+00:00
+Fecha local: 2026-11-18T00:28:56+00:00
 Entorno: Flutter Web + Firebase Local Emulator Suite, proyecto demo-practica-flutter.
 Cada ronda arranca una sesión de navegador nueva con cuentas ficticias.
 R1 | CP-01 | Aprobado | Firebase inició y se mostró el formulario de acceso.

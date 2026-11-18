@@ -13,6 +13,6 @@
 | API REST externa | No | La app usa los SDK de Firebase. El verificador consulta las interfaces locales de los emuladores. |
 | Otros servicios | No | El alcance de Firebase se limita a Auth y Firestore. |
 
-Las vistas verificadas son acceso, registro, lista, formulario de creación y detalle editable. La ejecución usa el proyecto `demo-practica-flutter` y cuentas ficticias. El modo con Firebase en la nube queda configurado mediante las opciones web locales del proyecto. Las capturas disponibles corresponden a Firebase Local Emulator Suite.
+Las vistas verificadas son acceso, registro, lista, formulario de creación y detalle editable. La ejecución usa el proyecto `demo-practica-flutter` y cuentas ficticias. El modo con Firebase en la nube se verificó con el proyecto de prueba `practica-flutter-pruebas` (Authentication con correo y contraseña, Firestore con las reglas de `firestore.rules`). Las capturas `04` y `05` de `docs/evidencias/firebase/` muestran en Firebase Console la tarea creada y modificada; el resto de las capturas corresponde a Firebase Local Emulator Suite.
 
-Los casos de Storage (CP-13) y FCM (CP-14 a CP-17) tienen estado **No ejecutado** con el motivo «fuera del alcance declarado». La declaración también está en la [plantilla oficial 08](08-plantilla-pruebas-e-incidencias.md#0-declaración-de-alcance). La captura de Firebase Console en la nube y la repetición supervisada en clase quedan pendientes.
+Los casos de Storage (CP-13) y FCM (CP-14 a CP-17) tienen estado **No ejecutado** con el motivo «fuera del alcance declarado». La declaración también está en la [plantilla oficial 08](08-plantilla-pruebas-e-incidencias.md#0-declaración-de-alcance). La repetición supervisada de INC-003 en clase queda pendiente.

@@ -14,10 +14,11 @@ Práctica de integración y pruebas de **Flutter Web**. La aplicación permite c
 | --- | --- |
 | Casos ejecutados | 17 de 22 planificados (5 fuera del alcance: Storage y FCM), en dos rondas |
 | Flujos críticos aprobados | 100 % (17 ÷ 17) |
-| Incidencias | 6 registradas (INC-001 a INC-006), 6 corregidas con commit `fix: INC-00X` y re-probadas |
-| `flutter test` | 8 pruebas en verde: 3 unitarias y 5 de widget con repositorio falso |
+| Incidencias | 7 registradas (INC-001 a INC-007), 7 corregidas con commit `fix: INC-00X` y re-probadas |
+| `flutter test` | 9 pruebas en verde: 3 unitarias y 6 de widget con repositorio falso |
 | `flutter analyze` | 4 diagnósticos informativos al inicio · «No issues found!» al final |
 | Integración continua | `flutter analyze`, `flutter test` y las dos rondas de casos funcionales se ejecutan en cada push en GitHub Actions |
+| Firebase en la nube | CP-07 y CP-09 repetidos en el proyecto de prueba `practica-flutter-pruebas`, con capturas de Firebase Console |
 
 ![Lista de tareas con una tarea pendiente y otra completada](docs/evidencias/capturas-aplicacion/09-actualizada.png)
 
@@ -73,7 +74,7 @@ python -m playwright install chromium
 python integration_test/validar_web.py
 ```
 
-Puedes pasar `--chrome RUTA_DEL_EJECUTABLE` para usar otro Chromium. `--evidencias` vuelve a capturar las imágenes en `docs/evidencias/`. Durante el caso sin conexión Playwright desactiva temporalmente la red del navegador de prueba.
+Puedes pasar `--chrome RUTA_DEL_EJECUTABLE` para usar otro Chromium. `--evidencias` vuelve a capturar las imágenes en `docs/evidencias/`. Durante el caso sin conexión Playwright desactiva temporalmente la red del navegador de prueba. Flutter Web conecta cada campo y cada botón unos cuadros después de mostrarlos, así que el verificador espera a que el texto escrito se conserve y repite un clic de Auth solo si la solicitud no llegó a salir.
 
 ## Atestados
 
@@ -87,7 +88,7 @@ Puedes pasar `--chrome RUTA_DEL_EJECUTABLE` para usar otro Chromium. `--evidenci
 | [Registro de incidencias](docs/04-registro-incidencias.md) | Causas, correcciones, commits y regresiones |
 | [Reflexión final](docs/05-reflexion-final.md) | Aprendizaje de la incidencia de guardado |
 | [Capturas de la aplicación](docs/evidencias/capturas-aplicacion/) | Evidencia del flujo principal |
-| [Capturas de Firebase Local Emulator Suite](docs/evidencias/firebase/) | Cuentas ficticias y datos creados y actualizados |
+| [Capturas de Firebase](docs/evidencias/firebase/) | Consola local de emuladores (01 a 03) y Firebase Console en la nube (04 y 05): cuentas ficticias y tareas creadas y actualizadas |
 | [Pruebas y análisis](docs/evidencias/pruebas-y-analisis/) | Salidas de ejecución reproducibles |
 
 ## Ejecutar con Firebase en la nube
@@ -104,7 +105,7 @@ flutter run -d chrome --dart-define-from-file=firebase.local.json
 
 Si en el equipo no se puede ejecutar Flutter, el flujo [App web contra Firebase en la nube](.github/workflows/web-nube.yml) compila la app con los valores guardados como secretos del repositorio (`FIREBASE_PROJECT_ID`, `FIREBASE_APP_ID`, `FIREBASE_API_KEY`, `FIREBASE_MESSAGING_SENDER_ID` y `FIREBASE_AUTH_DOMAIN`). El artefacto `web-nube` se sirve con `python -m http.server 5000` y se abre en `http://localhost:5000`.
 
-Usa cuentas ficticias. Crea y modifica una tarea, y captura los datos en Firestore de Firebase Console. Guarda esas capturas en `docs/evidencias/firebase/` con nombres que indiquen la operación. Las capturas incluidas en esta entrega proceden de la consola local de Firebase.
+Usa cuentas ficticias. Crea y modifica una tarea, y captura los datos en Firestore de Firebase Console. Guarda esas capturas en `docs/evidencias/firebase/` con nombres que indiquen la operación. Así se tomaron `04-firestore-nube-tarea-creada.png` y `05-firestore-nube-tarea-modificada.png` en el proyecto de prueba `practica-flutter-pruebas`; las capturas 01 a 03 proceden de la consola local de emuladores.
 
 ## Clonar el repositorio
 
